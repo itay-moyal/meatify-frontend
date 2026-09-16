@@ -35,7 +35,6 @@ if (isLocal) {
     service.generateSpotifyData(200, 100)
 }
 export const stationService = { getEmptyStation, getDefaultFilter, ...service }
-export const TAGS_DATA = await service.getTagsData()
 
 // Easy access to this service from the dev tools console
 // when using script - dev / dev:local

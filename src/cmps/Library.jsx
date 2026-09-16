@@ -3,7 +3,7 @@ import { useMediaQuery } from "react-responsive"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
-import { addStation, loadStations } from "../store/actions/station.actions"
+import { addStation, loadStations,loadTags } from "../store/actions/station.actions"
 import { updateUser } from "../store/actions/user.actions.js"
 import { loadSongs } from "../store/actions/song.actions.js"
 import { showSuccessMsg, showErrorMsg } from "../services/event-bus.service"
@@ -99,6 +99,7 @@ export function Library({ mobile = false }) {
   useEffect(() => {
     loadStations()
     loadSongs()
+    loadTags()
   }, [])
 
 

@@ -12,13 +12,16 @@ export const ADD_SONG_TO_STATION = "ADD_SONG_TO_STATION"
 export const REMOVE_SONG_FROM_STATION = "REMOVE_SONG_FROM_STATION"
 export const UPDATE_LIKED_STATION_COUNT = "UPDATE_LIKED_STATION_COUNT"
 
+export const SET_TAGS = "SET_TAGS"
+
 const initialStationState = {
   stations: [],
+  tags: [],
   selectedStation: null,
   lastWatchedStationId: null,
   lastWatchedStations: [],
-  filterBy: { txt: '', tags: [], genres: [], artists: [] },
-  isLoading: false
+  filterBy: { txt: "", tags: [], genres: [], artists: [] },
+  isLoading: false,
 }
 
 export function stationReducer(state = initialStationState, action = {}) {
@@ -26,11 +29,19 @@ export function stationReducer(state = initialStationState, action = {}) {
     case SET_STATIONS:
       return {
         ...state,
-        stations: action.stations
+        stations: action.stations,
+      }
+
+    case SET_TAGS:
+      return {
+        ...state,
+        tags: action.tags,
       }
 
     case SET_STATION:
-      const isAlreadyWatched = state.lastWatchedStations.includes(action.station._id)
+      const isAlreadyWatched = state.lastWatchedStations.includes(
+        action.station._id,
+      )
       return {
         ...state,
         selectedStation: action.station,
@@ -44,7 +55,7 @@ export function stationReducer(state = initialStationState, action = {}) {
       return {
         ...state,
         stations: state.stations.filter(
-          (station) => station._id !== action.stationId
+          (station) => station._id !== action.stationId,
         ),
         selectedStation:
           state.selectedStation?._id === action.stationId
@@ -53,25 +64,26 @@ export function stationReducer(state = initialStationState, action = {}) {
       }
 
     case ADD_STATION:
-      if (state.stations.some(station => station._id === action.station._id)) {
+      if (
+        state.stations.some((station) => station._id === action.station._id)
+      ) {
         return state
       }
       return {
         ...state,
-        stations: [action.station, ...state.stations]
+        stations: [action.station, ...state.stations],
       }
 
     case UPDATE_STATION:
       return {
         ...state,
-        stations: state.stations.map(station =>
-          station._id === action.station._id
-            ? action.station
-            : station
+        stations: state.stations.map((station) =>
+          station._id === action.station._id ? action.station : station,
         ),
-        selectedStation: state.selectedStation?._id === action.station._id
-          ? action.station
-          : state.selectedStation
+        selectedStation:
+          state.selectedStation?._id === action.station._id
+            ? action.station
+            : state.selectedStation,
       }
 
     case SET_FILTER_BY:
@@ -96,9 +108,9 @@ export function stationReducer(state = initialStationState, action = {}) {
         stations: state.stations.map((station) =>
           station._id === action.stationId
             ? {
-              ...station,
-              songs: station.songs.filter((s) => s._id !== action.sId),
-            }
+                ...station,
+                songs: station.songs.filter((s) => s._id !== action.sId),
+              }
             : station,
         ),
       }

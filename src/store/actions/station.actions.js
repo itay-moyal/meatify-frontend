@@ -8,6 +8,7 @@ import {
   SET_STATION,
   UPDATE_STATION,
   SET_STATION_LOADING,
+  SET_TAGS,
 } from "../reducers/station.reducer"
 
 export async function loadStations(filterBy) {
@@ -17,6 +18,16 @@ export async function loadStations(filterBy) {
     store.dispatch(getCmdSetStations(stations))
   } catch (err) {
     console.log("Cannot load stations", err)
+    throw err
+  }
+}
+
+export async function loadTags() {
+  try {
+    const tags = await stationService.getTagsData()
+    store.dispatch(getCmdSetTags(tags))
+  } catch (err) {
+    console.log("Cannot load tags", err)
     throw err
   }
 }
@@ -100,9 +111,7 @@ export function updateStationInStore(station) {
 
 export function addStationToStore(station) {
   store.dispatch(getCmdAddStation(station))
-
 }
-
 
 function getCmdSetStations(stations) {
   return {
@@ -136,5 +145,12 @@ function getCmdUpdateStation(station) {
   return {
     type: UPDATE_STATION,
     station,
+  }
+}
+
+function getCmdSetTags(tags) {
+  return {
+    type: SET_TAGS,
+    tags,
   }
 }

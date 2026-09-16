@@ -8,15 +8,10 @@ import {
   removeStation,
 } from "../store/actions/station.actions"
 import { showSuccessMsg, showErrorMsg } from "../services/event-bus.service"
-import { TAGS_DATA } from '../services/station'
 
 import { EditModal } from "../cmps/globalCmps/EditModal"
 import { StationHeader } from "../cmps/globalCmps/StationHeader"
 import { SongList } from "../cmps/globalCmps/SongList"
-import { IconComp } from "../cmps/globalCmps/IconComp"
-
-import { debounce } from "../services/util.service"
-import { loadSongs } from "../store/actions/song.actions"
 
 import { StationOptions } from "../cmps/globalCmps/StationOptions"
 import { ScrollArea } from "../cmps/globalCmps/ScrollArea"
@@ -26,11 +21,12 @@ import { updateUser } from "../store/actions/user.actions"
 
 import { socketService } from "../services/socket.service"
 
-
 export function StationDetails() {
   const navigate = useNavigate()
   const { id } = useParams()
   const loggedInUser = useSelector((storeState) => storeState.userModule.user)
+
+  const tags = useSelector((storeState) => storeState.stationModule.tags) || []
 
   const station = useSelector(
     (storeState) => storeState.stationModule.selectedStation,
@@ -52,10 +48,8 @@ export function StationDetails() {
   const stationSongs = useMemo(() => {
     const songIds = isLikedSongsStation ? likedSongIds : stationSongsIds
     if (!songIds.length || !Array.isArray(songs)) return []
-    const idToSong = new Map(songs.map(song => [song._id.toString(), song]))
-    return songIds
-      .map(id => idToSong.get(id.toString()))
-      .filter(Boolean)
+    const idToSong = new Map(songs.map((song) => [song._id.toString(), song]))
+    return songIds.map((id) => idToSong.get(id.toString())).filter(Boolean)
   }, [songs, stationSongsIds, likedSongIds, isLikedSongsStation])
 
   useEffect(() => {
@@ -68,21 +62,19 @@ export function StationDetails() {
     }
   }, [id])
 
-
-useEffect(() => {
+  useEffect(() => {
     if (!id) return
     async function fetchStation() {
-        try {
-            await loadStation(id)
-        } catch (err) {
-            console.log('Station not found, redirecting...')
-            navigate('/')
-        }
+      try {
+        await loadStation(id)
+      } catch (err) {
+        console.log("Station not found, redirecting...")
+        navigate("/")
+      }
     }
 
     fetchStation()
   }, [id, navigate])
-
 
   async function onSaveStation(updatedStation) {
     try {
@@ -113,14 +105,13 @@ useEffect(() => {
 
   function handleReorderSongs(updatedSongs) {
     if (isLikedSongsStation) {
-      console.log('isLikedSongsStation: ', isLikedSongsStation)
+      console.log("isLikedSongsStation: ", isLikedSongsStation)
       const updatedUser = {
         ...loggedInUser,
         likedSongIds: updatedSongs,
       }
       updateUser(updatedUser)
-    }
-    else {
+    } else {
       const updatedStation = {
         ...station,
         songs: updatedSongs,
@@ -129,7 +120,6 @@ useEffect(() => {
     }
   }
 
-
   if (!station && selectedStationId !== id)
     return (
       <section className="station-details dynamic-area">
@@ -137,9 +127,7 @@ useEffect(() => {
           <div className="station-details__loading">
             <p>Injecting Music</p>
             <LoadingAnimation />
-
           </div>
-
         </div>
       </section>
     )
@@ -150,27 +138,25 @@ useEffect(() => {
           <div className="station-details__loading">
             <p>Injecting Music</p>
             <LoadingAnimation />
-
           </div>
-
         </div>
       </section>
     )
   }
 
-
-
   const isOwner = loggedInUser?._id === station.createdBy?._id
 
-  const tagData = TAGS_DATA.find(
+  const tagData = tags.find(
     currTag => currTag.title === station.tags[0]
-  )
+)
 
   return (
-    <section className="station-details dynamic-area"
+    <section
+      className="station-details dynamic-area"
       style={{
-        '--tag-color': tagData?.color || '#509BF5',
-      }}>
+        "--tag-color": tagData?.color || "#509BF5",
+      }}
+    >
       <ScrollArea>
         <section className="station-details__container">
           <section className="station-details__header">
@@ -204,14 +190,13 @@ useEffect(() => {
             )}
 
             <section className="station-details__song-list dynamic-max-width">
-
-              {stationSongs?.length > 0 &&
+              {stationSongs?.length > 0 && (
                 <SongList
                   songs={stationSongs || []}
                   isSortable
                   onReorder={handleReorderSongs}
                 />
-              }
+              )}
 
               <StationSearchMore station={station} songs={songs} />
             </section>
@@ -221,4 +206,3 @@ useEffect(() => {
     </section>
   )
 }
-
