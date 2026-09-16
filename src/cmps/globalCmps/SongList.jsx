@@ -46,6 +46,7 @@ export function SongList({
             <SongPreview
               key={song._id}
               song={song}
+              songs={songs}
               index={index + 1}
               isSearchResult={isSearchResult}
             />
