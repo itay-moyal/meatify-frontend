@@ -2,7 +2,6 @@ import { httpService } from "../http.service"
 
 const STORAGE_KEY_LOGGEDIN_USER = "loggedinUser"
 
-login({ username: "user0", password: "123" })
 
 export const userService = {
   login,

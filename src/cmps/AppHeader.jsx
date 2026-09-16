@@ -139,12 +139,7 @@ export function AppHeader() {
             </NavLink>
           )}
           {user && <>
-            <button className="btn">
-              <IconComp name="notification" className="icon--sm icon--muted" />
-            </button>
-            <button className="btn">
-              <IconComp name="friends" className="icon--sm icon--muted" />
-            </button>
+            
 
             <div className="user-info">
               <button className="btn circle-btn">

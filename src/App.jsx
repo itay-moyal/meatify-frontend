@@ -6,7 +6,6 @@ import { BrowserRouter as Router } from "react-router-dom"
 import { Routes, Route } from "react-router-dom"
 
 import { AppHeader } from "./cmps/AppHeader.jsx"
-import { AppContainer } from "./pages/AppContainer.jsx"
 import { LibraryPage } from "./pages/LibraryPage.jsx"
 import { Explore } from "./pages/Explore.jsx"
 import { Browse } from "./pages/Browse.jsx"
@@ -24,8 +23,11 @@ import {
   destroySocketListeners,
 } from "./services/socket.listeners.js"
 
+
 import { socketService } from "./services/socket.service.js"
 import { MobileDock } from "./cmps/MobileDock.jsx"
+
+import { login } from "./store/actions/user.actions.js"
 
 function App() {
   const isExpanded = useSelector(
@@ -41,6 +43,12 @@ function App() {
     initSocketListeners()
     return () => destroySocketListeners()
   }, [])
+
+  useEffect(() => {
+  if (!loggedInUser) {
+    login({ username: "user0", password: "123" })
+  }
+}, [])
 
   useEffect(() => {
     if (!loggedInUser?._id) return

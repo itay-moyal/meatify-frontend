@@ -1,5 +1,5 @@
 import { userService } from '../../services/user'
-// import { socketService } from '../../services/socket.service.js'
+import { socketService } from '../../services/socket.service.js'
 import { store } from '../store'
 import { showErrorMsg } from '../../services/event-bus.service'
 import { REMOVE_USER, SET_USER, SET_USERS, SET_WATCHED_USER } from '../reducers/user.reducer'
